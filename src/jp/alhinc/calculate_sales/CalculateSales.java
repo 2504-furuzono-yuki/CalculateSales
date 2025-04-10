@@ -41,15 +41,15 @@ public class CalculateSales {
 		}
 
 		// ※ここから集計処理を作成してください。(処理内容2-1、2-2)
-		File[] files = new File("C:\\Users\\trainee1342\\Desktop\\売上集計課題").listFiles();
+		File[] files = new File(args[0]).listFiles();
 		List<File> rcdFiles = new ArrayList<>();
 
 		for(int i = 0; i < files.length ; i++) {
 			//正規表現…数字8桁「[0-9]{8}」　　.rcd「.rcd$」
 			if(files[i].getName().matches("^[0-9]{8}.rcd$")) {
 				rcdFiles.add(files[i]);
+			}
 		}
-	}
 		BufferedReader br = null;
 
 		try {
@@ -140,6 +140,7 @@ public class CalculateSales {
 		} catch(IOException e) {
 			System.out.println(UNKNOWN_ERROR);
 			return false;
+
 		} finally {
 			// ファイルを開いている場合
 			if(br != null) {
@@ -176,10 +177,9 @@ public class CalculateSales {
 			for (String key : branchNames.keySet()) {
 				br.write(key + "," + branchNames.get(key) + "," + branchSales.get(key));
 				br.newLine();
-
 			}
 
-		return true;
+			return true;
 
 		} catch(IOException e) {
 			System.out.println(UNKNOWN_ERROR);
@@ -197,5 +197,4 @@ public class CalculateSales {
 			}
 		}
 	}
-
 }
