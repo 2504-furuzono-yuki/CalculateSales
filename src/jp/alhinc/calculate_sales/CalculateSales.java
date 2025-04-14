@@ -33,6 +33,7 @@ public class CalculateSales {
 	private static final String FILE_NAME_ERROR = "売上ファイル名が連番になっていません";
 	private static final String FILE_SALES_ERROR = "合計⾦額が10桁を超えました";
 	private static final String FILE_NUMBER_ERROR = "の支店コードが不正です";
+	private static final String FILE_COMNUM_ERROR = "の商品コードが不正です";
 	private static final String FILE_FORMAT_ERROR = "のフォーマットが不正です";
 
 	/**
@@ -109,6 +110,12 @@ public class CalculateSales {
 					System.out.println(file.getName() + FILE_NUMBER_ERROR);
 					return;
 				}
+
+				if (!commodityNames.containsKey(list.get(1))) {
+					System.out.println(file.getName() + FILE_COMNUM_ERROR);
+					return;
+				}
+
 				if (!list.get(2).matches("^[0-9]*$")) {
 					System.out.println(UNKNOWN_ERROR);
 					return;
@@ -117,16 +124,16 @@ public class CalculateSales {
 				long fileSale = Long.parseLong(list.get(2));
 				//一旦足し算した値を、変数に入れる。　※最後はマップに入れたい
 				Long saleAmount = branchSales.get(list.get(0)) + fileSale;
-				Long Amount = commoditySales.get(list.get(1)) + fileSale;
+				Long amount = commoditySales.get(list.get(1)) + fileSale;
 
-				if (saleAmount >= 10000000000L) {
+				if (saleAmount >= 10000000000L || amount >= 10000000000L) {
 					System.out.println(FILE_SALES_ERROR);
 					return;
 				}
 
 				//足し算した結果(変数saleAmount)を、マップsaleAmountに入れてあげる
 				branchSales.put(list.get(0), saleAmount);
-				commoditySales.put(list.get(1), Amount);
+				commoditySales.put(list.get(1), amount);
 
 			} catch (IOException e) {
 				System.out.println(UNKNOWN_ERROR);
