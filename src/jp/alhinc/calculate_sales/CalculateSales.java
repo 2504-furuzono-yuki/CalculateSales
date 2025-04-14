@@ -30,6 +30,7 @@ public class CalculateSales {
 	private static final String UNKNOWN_ERROR = "予期せぬエラーが発生しました";
 	private static final String FILE_NOT_EXIST = "支店定義ファイルが存在しません";
 	private static final String FILE_INVALID_FORMAT = "支店定義ファイルのフォーマットが不正です";
+	private static final String FILE_COMMODITY_FORMAT = "商品定義ファイルのフォーマットが不正です";
 	private static final String FILE_NAME_ERROR = "売上ファイル名が連番になっていません";
 	private static final String FILE_SALES_ERROR = "合計⾦額が10桁を超えました";
 	private static final String FILE_NUMBER_ERROR = "の支店コードが不正です";
@@ -57,11 +58,11 @@ public class CalculateSales {
 		Map<String, Long> commoditySales = new HashMap<>();
 
 		// 支店定義ファイル読み込み処理
-		if (!readFile(args[0], FILE_NAME_BRANCH_LST, branchNames, branchSales, "^[0-9]{3}")) {
+		if (!readFile(args[0], FILE_NAME_BRANCH_LST, branchNames, branchSales, "^[0-9]{3}", FILE_INVALID_FORMAT)) {
 			return;
 		}
 		// 商品別集計ファイル読み込み処理
-		if (!readFile(args[0], FILE_NAME_COMMODITY_LST, commodityNames, commoditySales, "^[A-Za-z0-9]+${8}")) {
+		if (!readFile(args[0], FILE_NAME_COMMODITY_LST, commodityNames, commoditySales, "^[A-Za-z0-9]+${8}", FILE_COMMODITY_FORMAT)) {
 			return;
 		}
 
@@ -164,6 +165,7 @@ public class CalculateSales {
 
 	/**
 	 * 支店定義ファイル読み込み処理
+	 * @param errorFormat
 	 * @param string
 	 *
 	 * @param フォルダパス
@@ -173,7 +175,7 @@ public class CalculateSales {
 	 * @return 読み込み可否
 	 */
 	private static boolean readFile(String path, String fileName, Map<String, String> namesMap,
-			Map<String, Long> salesMap, String regularexpression) {
+			Map<String, Long> salesMap, String regularexpression, String errorFormat) {
 		BufferedReader br = null;
 
 		try {
@@ -192,7 +194,7 @@ public class CalculateSales {
 				// ※ここの読み込み処理を変更してください。(処理内容1-2)
 				String[] items = line.split(",");
 				if ((items.length != 2) || (!items[0].matches(regularexpression))) {
-					System.out.println(FILE_INVALID_FORMAT);
+					System.out.println(errorFormat);
 					return false;
 				}
 
